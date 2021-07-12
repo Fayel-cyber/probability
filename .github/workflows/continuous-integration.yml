@@ -25,8 +25,8 @@ jobs:
     env:
       py: /opt/python/${{ matrix.pyver }}/bin/python
       img: quay.io/pypa/manylinux2014_${{ matrix.arch }}
-      #SHARD: ${{ matrix.shard }}
-      #NUM_SHARDS: 2
+      SHARD: ${{ matrix.shard }}
+      NUM_SHARDS: 2
     steps:
       - name: Checkout
         uses: actions/checkout@v2
