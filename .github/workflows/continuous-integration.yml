@@ -23,7 +23,7 @@ jobs:
         shard: [0, 1]
         arch: [aarch64]
     env:
-      py: /opt/python/${{ matrix.python-version }}/bin/python
+      py: /opt/python/${{ matrix.pyver }}/bin/python
       img: quay.io/pypa/manylinux2014_${{ matrix.arch }}
       SHARD: ${{ matrix.shard }}
       NUM_SHARDS: 2
@@ -39,6 +39,6 @@ jobs:
           ${{ env.img }} \
           bash -exc '${{ env.py }} -m pip install virtualenv && ${{ env.py }} -m venv .env && \
           source .env/bin/activate && \
-          ./testing/run_github_tests.sh&& \
+          ./testing/run_github_tests.sh && \
           deactivate'
           
