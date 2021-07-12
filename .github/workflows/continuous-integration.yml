@@ -21,12 +21,12 @@ jobs:
       matrix:
         pyver: [cp37-cp37m]
         shard: [0, 1]
-        arch: ['aarch64']
+        arch: [aarch64]
     env:
       py: /opt/python/${{ matrix.python-version }}/bin/python
       img: quay.io/pypa/manylinux2014_${{ matrix.arch }}
-      SHARD: ${{ matrix.shard }}
-      NUM_SHARDS: 2
+      #SHARD: ${{ matrix.shard }}
+      #NUM_SHARDS: 2
     steps:
       - name: Checkout
         uses: actions/checkout@v2
