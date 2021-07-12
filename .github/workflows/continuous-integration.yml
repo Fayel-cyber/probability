@@ -61,8 +61,8 @@ jobs:
             name: testlogs-${{ matrix.shard }}
             path: bazel-testlogs
   
-  tests2: aarch64
-    name: Test ${{ matrix.pyver }} aarch64
+  tests2:
+    name: Tests_arm64
     runs-on: ubuntu-latest_arm64
     strategy:
       matrix:
