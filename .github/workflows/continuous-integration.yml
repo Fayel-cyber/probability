@@ -16,7 +16,7 @@ on: [push, pull_request]
 jobs:
   tests2:
     name: Tests_arm64
-    runs-on: ubuntu-latest_arm64
+    runs-on: ubuntu-latest
     strategy:
       matrix:
         pyver: [cp37-cp37m]
@@ -25,8 +25,8 @@ jobs:
     env:
       py: /opt/python/${{ matrix.python-version }}/bin/python
       img: quay.io/pypa/manylinux2014_${{ matrix.arch }}
-      #SHARD: ${{ matrix.shard }}
-      #NUM_SHARDS: 2
+      SHARD: ${{ matrix.shard }}
+      NUM_SHARDS: 2
     steps:
       - name: Checkout
         uses: actions/checkout@v2
