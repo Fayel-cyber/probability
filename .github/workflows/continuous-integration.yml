@@ -20,10 +20,10 @@ jobs:
     strategy:
       matrix:
         python-version: [3.7]
-        shard: [0, 1]
+        shard: [0]
     env:
       SHARD: ${{ matrix.shard }}
-      NUM_SHARDS: 2
+      NUM_SHARDS: 1
     steps:
       - name: Checkout
         uses: actions/checkout@v1
