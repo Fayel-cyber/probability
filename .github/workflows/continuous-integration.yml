@@ -60,3 +60,36 @@ jobs:
         with:
             name: testlogs-${{ matrix.shard }}
             path: bazel-testlogs
+  
+  tests2: aarch64
+    name: Tests2
+    runs-on: ubuntu-latest_arm64
+    strategy:
+      matrix:
+        python-version: [3.7]
+        shard: [0, 1, 2, 3, 4]
+        arch: ['aarch64']
+    env:
+      py: /opt/python/${{ matrix.python-version }}/bin/python
+      img: quay.io/pypa/manylinux2014_${{ matrix.arch }}
+      SHARD: ${{ matrix.shard }}
+      NUM_SHARDS: 5
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+        uses: docker/setup-qemu-action@v1
+        with:
+          fetch-depth: 1
+      - name: Setup Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: ${{ matrix.python-version }}
+      - name: Tests
+        run: |
+          ./testing/run_github_tests.sh
+      - name: Upload test logs
+        if: failure()
+        uses: actions/upload-artifact@v1
+        with:
+            name: testlogs-${{ matrix.shard }}
+            path: bazel-testlogs
