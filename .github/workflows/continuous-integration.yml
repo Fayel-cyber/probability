@@ -14,35 +14,6 @@
 name: Tests
 on: [push, pull_request]
 jobs:
-  tests:
-    name: Tests
-    runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        python-version: [3.7]
-        shard: [0]
-    env:
-      SHARD: ${{ matrix.shard }}
-      NUM_SHARDS: 1
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v1
-        with:
-          fetch-depth: 1
-      - name: Setup Python
-        uses: actions/setup-python@v2
-        with:
-          python-version: ${{ matrix.python-version }}
-      - name: Tests
-        run: |
-          ./testing/run_github_tests.sh
-      - name: Upload test logs
-        if: failure()
-        uses: actions/upload-artifact@v1
-        with:
-            name: testlogs-${{ matrix.shard }}
-            path: bazel-testlogs
-  
   tests2:
     name: Tests_arm64
     runs-on: ubuntu-latest_arm64
@@ -71,9 +42,3 @@ jobs:
           ./testing/run_github_tests.sh&& \
           deactivate'
           
-      - name: Upload test logs
-        if: failure()
-        uses: actions/upload-artifact@v1
-        with:
-            name: testlogs-${{ matrix.shard }}
-            path: bazel-testlogs
