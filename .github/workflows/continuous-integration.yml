@@ -14,34 +14,16 @@
 name: Tests
 on: [push, pull_request]
 jobs:
-  lints:
-    name: Lints
-    runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        python-version: [3.7]
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v1
-        with:
-          fetch-depth: 20
-      - name: Setup Python
-        uses: actions/setup-python@v2
-        with:
-          python-version: ${{ matrix.python-version }}
-      - name: Lints
-        run: |
-          ./testing/run_github_lints.sh
   tests:
     name: Tests
     runs-on: ubuntu-latest
     strategy:
       matrix:
         python-version: [3.7]
-        shard: [0, 1, 2, 3, 4]
+        shard: [0, 1]
     env:
       SHARD: ${{ matrix.shard }}
-      NUM_SHARDS: 5
+      NUM_SHARDS: 2
     steps:
       - name: Checkout
         uses: actions/checkout@v1
@@ -67,13 +49,13 @@ jobs:
     strategy:
       matrix:
         pyver: [cp37-cp37m]
-        shard: [0, 1, 2, 3, 4]
+        shard: [0, 1]
         arch: ['aarch64']
     env:
       py: /opt/python/${{ matrix.python-version }}/bin/python
       img: quay.io/pypa/manylinux2014_${{ matrix.arch }}
       SHARD: ${{ matrix.shard }}
-      NUM_SHARDS: 5
+      NUM_SHARDS: 2
     steps:
       - name: Checkout
         uses: actions/checkout@v2
@@ -83,8 +65,12 @@ jobs:
       - name: Tests
         run: |
           docker run --rm -v ${{ github.workspace }}:/ws:rw --workdir=/ws \
-            ${{ env.img }} \
-          bash -exc ./testing/run_github_tests.sh
+          ${{ env.img }} \
+          bash -exc '${{ env.py }} -m pip install virtualenv && ${{ env.py }} -m venv .env && \
+          source .env/bin/activate && \
+          ./testing/run_github_tests.sh&& \
+          deactivate'
+          
       - name: Upload test logs
         if: failure()
         uses: actions/upload-artifact@v1
