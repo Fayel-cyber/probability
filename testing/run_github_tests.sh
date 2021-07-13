@@ -25,12 +25,14 @@ DIR=$(cd $(dirname "${BASH_SOURCE[0]}") && pwd)
 
 # Make sure the environment variables are set.
 if [ -z "${SHARD}" ]; then
+  echo "$SHARD"
   echo "SHARD is unset."
   exit -1
 fi
 
 if [ -z "${NUM_SHARDS}" ]; then
   echo "NUM_SHARDS is unset."
+  echo "$NUM_SHARDS"
   exit -1
 fi
 
