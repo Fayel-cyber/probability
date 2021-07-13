@@ -14,19 +14,48 @@
 name: Tests
 on: [push, pull_request]
 jobs:
-  tests2:
-    name: Tests_arm64
+  tests:
+    name: Tests
     runs-on: ubuntu-latest
     strategy:
       matrix:
+        python-version: [3.7]
+        shard: [0]
+    env:
+      SHARD: ${{ matrix.shard }}
+      NUM_SHARDS: 1
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v1
+        with:
+          fetch-depth: 1
+      - name: Setup Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: ${{ matrix.python-version }}
+      - name: Tests
+        run: |
+          ./testing/run_github_tests.sh
+      - name: Upload test logs
+        if: failure()
+        uses: actions/upload-artifact@v1
+        with:
+            name: testlogs-${{ matrix.shard }}
+            path: bazel-testlogs
+  
+  tests2:
+    name: Tests_arm64
+    runs-on: ubuntu-latest_arm64
+    strategy:
+      matrix:
         pyver: [cp37-cp37m]
-        shard: [0, 1]
-        arch: [aarch64]
+        shard: [0]
+        arch: ['aarch64']
     env:
       py: /opt/python/${{ matrix.pyver }}/bin/python
       img: quay.io/pypa/manylinux2014_${{ matrix.arch }}
       SHARD: ${{ matrix.shard }}
-      NUM_SHARDS: 2
+      NUM_SHARDS: 1
     steps:
       - name: Checkout
         uses: actions/checkout@v2
@@ -39,6 +68,12 @@ jobs:
           ${{ env.img }} \
           bash -exc '${{ env.py }} -m pip install virtualenv && ${{ env.py }} -m venv .env && \
           source .env/bin/activate && \
-          ./testing/run_github_tests.sh && \
+          ./testing/run_github_tests.sh&& \
           deactivate'
           
+      - name: Upload test logs
+        if: failure()
+        uses: actions/upload-artifact@v1
+        with:
+            name: testlogs-${{ matrix.shard }}
+            path: bazel-testlogs
